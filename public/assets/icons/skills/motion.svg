@@ -1,0 +1,22 @@
+<svg
+  width="52"
+  height="52"
+  viewBox="0 0 52 52"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <g transform="translate(7 7) scale(0.87156)">
+    <path
+      d="M43.6 0V21.8L32.7 32.7 21.8 43.6 10.9 32.7 21.8 21.8V21.9 21.8L43.6 0Z"
+      fill="#59529D"
+    />
+    <path
+      d="M43.6 21.8V43.6L32.7 32.7 43.6 21.8Z"
+      fill="#5271B4"
+    />
+    <path
+      d="M21.8 21.8 10.9 32.7 0 43.6V0L10.9 10.9 21.8 21.8Z"
+      fill="#BB4B96"
+    />
+  </g>
+</svg>

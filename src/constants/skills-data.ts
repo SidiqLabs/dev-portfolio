@@ -1,0 +1,88 @@
+// src/constants/skills-data.ts
+
+export const SKILLS = [
+  {
+    name: 'HTML5',
+    icon: '/assets/icons/skills/html5.svg',
+    iconClassName: 'h-[clamp(32px,8vw,54px)] w-auto',
+    level: 100,
+    orbitRing: 2,
+  },
+  {
+    name: 'CSS3',
+    icon: '/assets/icons/skills/css3.svg',
+    iconClassName: 'h-[clamp(32px,8vw,54px)] w-auto',
+    level: 80,
+    orbitRing: 2,
+  },
+  {
+    name: 'JavaScript',
+    icon: '/assets/icons/skills/javascript.svg',
+    iconClassName: 'h-[clamp(32px,8vw,54px)] w-auto',
+    level: 90,
+    orbitRing: 1,
+  },
+  {
+    name: 'TypeScript',
+    icon: '/assets/icons/skills/typescript.svg',
+    iconClassName: 'h-[clamp(32px,8vw,54px)] w-auto',
+    level: 70,
+    orbitRing: 1,
+  },
+  {
+    name: 'React',
+    icon: '/assets/icons/skills/react.svg',
+    iconClassName: 'h-[clamp(32px,8vw,54px)] w-auto',
+    level: 90,
+    orbitRing: 0,
+  },
+  {
+    name: 'Redux',
+    icon: '/assets/icons/skills/redux.svg',
+    iconClassName: 'h-[clamp(32px,8vw,54px)] w-auto',
+    level: 85,
+    orbitRing: 0,
+  },
+  {
+    name: 'Next.js',
+    icon: '/assets/icons/skills/nextjs.svg',
+    iconClassName: 'h-[clamp(28px,7vw,46px)] w-auto',
+    level: 75,
+    orbitRing: 2,
+  },
+  {
+    name: 'Tailwind CSS',
+    icon: '/assets/icons/skills/tailwindcss.svg',
+    iconClassName: 'h-[clamp(26px,6vw,40px)] w-auto',
+    level: 85,
+    orbitRing: 2,
+  },
+  {
+    name: 'TanStack Query',
+    icon: '/assets/icons/skills/tanstackquery.svg',
+    iconClassName: 'h-[clamp(30px,7vw,48px)] w-auto',
+    level: 70,
+    orbitRing: 3,
+  },
+  {
+    name: 'React Hook Form',
+    icon: '/assets/icons/skills/reacthookform.svg',
+    iconClassName: 'h-[clamp(30px,7vw,48px)] w-auto',
+    level: 75,
+    orbitRing: 3,
+  },
+  {
+    name: 'Zod',
+    icon: '/assets/icons/skills/zod.svg',
+    iconClassName: 'h-[clamp(28px,7vw,46px)] w-auto',
+    level: 70,
+    orbitRing: 3,
+  },
+  {
+    name: 'Motion',
+    icon: '/assets/icons/skills/motion.svg',
+    iconClassName: 'h-[clamp(30px,7vw,48px)] w-auto',
+    level: 70,
+    orbitRing: 3,
+  },
+] as const;
