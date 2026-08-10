@@ -102,3 +102,14 @@ Author
 
 Sidiq Kusumah
 Frontend Software Engineer
+
+## Copyright and Usage
+
+Copyright © 2026 Sidiq Kusumah. All rights reserved.
+
+This repository is publicly viewable for portfolio review and technical evaluation, but it is **not released under an open-source license**.
+
+Copying, rebranding, redistributing, or publishing this project or substantial portions of it as another personal portfolio or reusable template is not permitted without prior written permission.
+
+See [`NOTICE.md`](NOTICE.md) for the full usage notice.
+
