@@ -14,17 +14,13 @@ const Projects = () => {
       subtitle='A collection of frontend projects that show my progress in building responsive, data-driven, and maintainable web applications.'
       id='projects'
     >
-      <motion.div
+      <div
         className='mx-auto grid w-full max-w-[72.375rem] grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2 lg:grid-cols-3'
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
       >
         {projectsData.map((project, index) => (
           <ProjectCard key={project.title} project={project} index={index} />
         ))}
-      </motion.div>
+      </div>
     </Section>
   );
 };
