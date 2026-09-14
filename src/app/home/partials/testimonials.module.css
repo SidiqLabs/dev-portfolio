@@ -1,45 +1,29 @@
 .marqueeViewport {
+  position: relative;
   overflow: hidden;
-
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0,
-    black 112px,
-    black calc(100% - 112px),
-    transparent 100%
-  );
-
-  mask-image: linear-gradient(
-    to right,
-    transparent 0,
-    black 112px,
-    black calc(100% - 112px),
-    transparent 100%
-  );
-
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
 }
 
-@media (max-width: 767px) {
-  .marqueeViewport {
-    -webkit-mask-image: linear-gradient(
-      to right,
-      transparent 0,
-      black 64px,
-      black calc(100% - 64px),
-      transparent 100%
-    );
+.marqueeFade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 56px;
+  pointer-events: none;
+}
 
-    mask-image: linear-gradient(
-      to right,
-      transparent 0,
-      black 64px,
-      black calc(100% - 64px),
-      transparent 100%
-    );
+.marqueeFadeLeft {
+  left: 0;
+  background: linear-gradient(90deg, var(--color-base-background) 0%, rgba(12, 13, 13, 0.86) 42%, rgba(12, 13, 13, 0) 100%);
+}
+
+.marqueeFadeRight {
+  right: 0;
+  background: linear-gradient(270deg, var(--color-base-background) 0%, rgba(12, 13, 13, 0.86) 42%, rgba(12, 13, 13, 0) 100%);
+}
+
+@media (min-width: 768px) {
+  .marqueeFade {
+    width: 112px;
   }
 }
