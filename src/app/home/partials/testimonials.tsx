@@ -1,17 +1,28 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import {
+  type PointerEvent as ReactPointerEvent,
+  useEffect,
+  useState,
+} from 'react';
 
 import { Section } from '@/components/layouts/section';
 import { Marquee } from '@/components/ui/marquee';
 
-import { testimonialsData, type Testimonial } from '@/constants/testimonials-data';
+import {
+  testimonialsData,
+  type Testimonial,
+} from '@/constants/testimonials-data';
 
 import styles from './testimonials.module.css';
 
-const topRowTestimonials = testimonialsData.filter((_, index) => index % 2 === 0);
-const bottomRowTestimonials = testimonialsData.filter((_, index) => index % 2 === 1);
+const topRowTestimonials = testimonialsData.filter(
+  (_, index) => index % 2 === 0
+);
+const bottomRowTestimonials = testimonialsData.filter(
+  (_, index) => index % 2 === 1
+);
 
 const featuredTestimonial = testimonialsData.find(
   (testimonial) => testimonial.featured
@@ -23,10 +34,38 @@ const defaultSelectedTestimonial = featuredTestimonial
     }-${featuredTestimonial.id}`
   : undefined;
 
+type MarqueeDirection = 'left' | 'right';
+
 const Testimonials = () => {
   const [selectedTestimonial, setSelectedTestimonial] = useState(
     defaultSelectedTestimonial
   );
+
+  const [pausedTouchRow, setPausedTouchRow] =
+    useState<MarqueeDirection | null>(null);
+
+  useEffect(() => {
+    if (pausedTouchRow === null) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target;
+
+      if (
+        target instanceof Element &&
+        target.closest('[data-testimonial-marquee-row]')
+      ) {
+        return;
+      }
+
+      setPausedTouchRow(null);
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+    };
+  }, [pausedTouchRow]);
 
   return (
     <Section
@@ -35,7 +74,12 @@ const Testimonials = () => {
       id='testimonials'
     >
       <div className='relative mx-auto max-w-[98rem] overflow-visible'>
-        <div className='pointer-events-none absolute -right-50 -top-35 -z-10 size-[32.375rem] rounded-full [background:var(--glow-atmosphere-purple)] blur-[22.625rem]' />
+        <div
+          aria-hidden='true'
+          className='pointer-events-none absolute inset-x-0 -top-80 bottom-0 -z-10'
+        >
+          <div className='absolute top-[14rem] left-1/2 size-[12rem] -translate-x-1/2 rounded-full blur-[4rem] [background:var(--glow-atmosphere-purple)] lg:top-[11.25rem] lg:right-0 lg:left-auto lg:size-[32.375rem] lg:translate-x-0 lg:blur-[22.625rem]' />
+        </div>
 
         <div className='space-y-5'>
           <TestimonialRow
@@ -43,6 +87,8 @@ const Testimonials = () => {
             testimonials={topRowTestimonials}
             selectedTestimonial={selectedTestimonial}
             onSelect={setSelectedTestimonial}
+            isTouchPaused={pausedTouchRow === 'right'}
+            onTouchPause={() => setPausedTouchRow('right')}
           />
 
           <TestimonialRow
@@ -50,6 +96,8 @@ const Testimonials = () => {
             testimonials={bottomRowTestimonials}
             selectedTestimonial={selectedTestimonial}
             onSelect={setSelectedTestimonial}
+            isTouchPaused={pausedTouchRow === 'left'}
+            onTouchPause={() => setPausedTouchRow('left')}
           />
         </div>
       </div>
@@ -63,7 +111,9 @@ type TestimonialRowProps = {
   testimonials: Testimonial[];
   selectedTestimonial: string | undefined;
   onSelect: (id: string) => void;
-  direction: 'left' | 'right';
+  direction: MarqueeDirection;
+  isTouchPaused: boolean;
+  onTouchPause: () => void;
 };
 
 const TestimonialRow = ({
@@ -71,9 +121,19 @@ const TestimonialRow = ({
   selectedTestimonial,
   onSelect,
   direction,
+  isTouchPaused,
+  onTouchPause,
 }: TestimonialRowProps) => {
+  const handlePointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== 'mouse') {
+      onTouchPause();
+    }
+  };
+
   return (
     <div
+      data-testimonial-marquee-row
+      onPointerUp={handlePointerUp}
       className={[
         styles.marqueeViewport,
         'relative left-1/2 w-[min(96.25rem,calc(100vw-2rem))] -translate-x-1/2',
@@ -85,6 +145,7 @@ const TestimonialRow = ({
         pauseOnHover
         repeat={1}
         className='py-2 [--duration:36s] [--gap:1.25rem]'
+        paused={isTouchPaused}
       >
         {testimonials.map((testimonial) => {
           const testimonialInstanceId = `${direction}-${testimonial.id}`;
@@ -132,7 +193,7 @@ const TestimonialCard = ({
         'transition-all duration-300',
         isSelected
           ? 'border-transparent shadow-[var(--shadow-glow-brand-sm)] [background:linear-gradient(var(--color-base-background),var(--color-base-background))_padding-box,var(--gradient-brand)_border-box]'
-          : 'border-neutral-900 hover:-translate-y-1 hover:border-brand-purple/40 hover:shadow-[var(--shadow-glow-brand-xs)]',
+          : 'hover:border-brand-purple/40 border-neutral-900 hover:-translate-y-1 hover:shadow-[var(--shadow-glow-brand-xs)]',
       ].join(' ')}
     >
       <div className='flex items-center gap-3'>
@@ -150,7 +211,7 @@ const TestimonialCard = ({
         </div>
       </div>
 
-      <p className='mt-6 line-clamp-4 text-[var(--text-lg)] leading-[var(--text-lg--line-height)] font-normal text-neutral-100/75'>
+      <p className='mt-6 line-clamp-4 leading-[var(--text-lg--line-height)] font-normal text-[var(--text-lg)] text-neutral-100/75'>
         “{quote}”
       </p>
     </button>

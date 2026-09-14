@@ -11,6 +11,7 @@ interface MarqueeProps extends ComponentPropsWithRef<'div'> {
   reverse?: boolean;
   pauseOnHover?: boolean;
   children: ReactNode;
+  paused?: boolean;
   vertical?: boolean;
   repeat?: number;
 }
@@ -21,6 +22,7 @@ export const Marquee = ({
   pauseOnHover = true,
   children,
   vertical = false,
+  paused = false,
   repeat = 1,
   ...props
 }: MarqueeProps) => {
@@ -52,6 +54,7 @@ export const Marquee = ({
             : 'animate-marquee flex-row',
           pauseOnHover &&
             'group-hover:[animation-play-state:paused]',
+          paused && '[animation-play-state:paused]',
           reverse && '[animation-direction:reverse]'
         )}
       >
