@@ -1,6 +1,6 @@
 .marqueeViewport {
-  --marquee-fade-width: 72px;
-  --marquee-fade-soft-stop: 24px;
+  --marquee-fade-width: 112px;
+  --marquee-fade-soft-stop: 36px;
 
   position: relative;
   overflow: hidden;
@@ -32,25 +32,30 @@
   mask-size: 100% 100%;
 }
 
-/*
- * Experimental real-device QA:
- * disable painted fade overlays.
- *
- * The previous overlays painted --color-base-background over the
- * atmospheric glow, which can create visible vertical seams.
- *
- * Keep these DOM nodes disabled for this local experiment only.
- * If QA passes, remove the obsolete nodes cleanly in the final patch.
- */
-.marqueeFade,
-.marqueeFadeLeft,
-.marqueeFadeRight {
-  display: none;
+.marqueeViewport::before,
+.marqueeViewport::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: var(--marquee-fade-width);
+  pointer-events: none;
 }
 
-@media (min-width: 768px) {
+.marqueeViewport::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--color-base-background), rgba(12, 13, 13, 0));
+}
+
+.marqueeViewport::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--color-base-background), rgba(12, 13, 13, 0));
+}
+
+@media (max-width: 767px) {
   .marqueeViewport {
-    --marquee-fade-width: 112px;
-    --marquee-fade-soft-stop: 36px;
+    --marquee-fade-width: 72px;
+    --marquee-fade-soft-stop: 24px;
   }
 }
