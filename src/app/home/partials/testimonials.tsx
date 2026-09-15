@@ -136,7 +136,8 @@ const TestimonialRow = ({
       onPointerUp={handlePointerUp}
       className={[
         styles.marqueeViewport,
-        'mx-auto w-full max-w-[96.25rem]',
+        'relative left-1/2 w-[min(96.25rem,calc(100dvw-2rem))] -translate-x-1/2',
+        'md:w-[min(96.25rem,calc(100dvw-clamp(6rem,10vw,10rem)))]',
       ].join(' ')}
     >
       <Marquee
