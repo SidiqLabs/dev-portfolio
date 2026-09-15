@@ -29,7 +29,7 @@ const useMediaQuery = (query: string, defaultValue = false) => {
 };
 
 function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
-  const isLargeIsh = useMediaQuery('(min-width: 1024px)', false);
+  const isLargeIsh = useMediaQuery('(min-width: 960px)', false);
 
   const [open, setOpen] = React.useState(false);
 

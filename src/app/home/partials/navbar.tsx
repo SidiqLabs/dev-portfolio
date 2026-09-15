@@ -55,7 +55,7 @@ const Navbar = () => {
             className='h-14 w-14 object-contain drop-shadow-[0_0_18px_rgba(135,70,235,0.22)] transition-all duration-300 hover:drop-shadow-[0_0_26px_rgba(135,70,235,0.42)] max-md:h-11 max-md:w-11'
           />
         </Link>
-        <nav className='hidden lg:block'>
+        <nav className='hidden min-[960px]:block'>
           <ul className='flex-start gap-3'>
             {navigationData.map((data) => (
               <li key={data.label}>
@@ -70,7 +70,7 @@ const Navbar = () => {
           asChild
           variant='brand'
           size='brand'
-          className='hidden w-[11.25rem] gap-2 px-0 lg:flex'
+          className='hidden w-[11.25rem] gap-2 px-0 min-[960px]:flex'
         >
           <Link href='#contact'>
             <Mail className='size-4' aria-hidden='true' />
@@ -80,7 +80,7 @@ const Navbar = () => {
 
         <Sheet>
           <SheetTrigger asChild>
-            <Menu className='cursor-pointer lg:hidden' />
+            <Menu className='cursor-pointer min-[960px]:hidden' />
           </SheetTrigger>
           <SheetContent>
             <nav className='mt-16'>

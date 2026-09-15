@@ -6,7 +6,7 @@ import { Volume2, VolumeX } from 'lucide-react';
 import { motion } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRef, useState } from 'react';
+import { type MouseEvent, type PointerEvent, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 
@@ -22,38 +22,90 @@ const Hero = () => {
   const [isPreviewPlaying, setIsPreviewPlaying] = useState(false);
 
   const handlePlayPreview = async () => {
-    if (!videoRef.current) return;
+    const video = videoRef.current;
 
-    setIsPreviewPlaying(true);
-    videoRef.current.muted = !isSoundEnabled;
+    if (!video) return;
+
+    video.muted = !isSoundEnabled;
 
     try {
-      await videoRef.current.play();
+      await video.play();
+      setIsPreviewPlaying(true);
     } catch {
-      // Ignore autoplay interruption.
+      setIsPreviewPlaying(false);
     }
   };
 
   const handleStopPreview = () => {
-    if (!videoRef.current) return;
+    const video = videoRef.current;
 
-    videoRef.current.pause();
-    videoRef.current.currentTime = 0;
+    if (!video) return;
+
+    video.pause();
+    video.currentTime = 0;
     setIsPreviewPlaying(false);
   };
 
+  const handleHeroVideoPointerLeave = (
+    event: PointerEvent<HTMLDivElement>
+  ) => {
+    if (event.pointerType === 'mouse') {
+      handleStopPreview();
+    }
+  };
+
+  const handleHeroVideoPointerUp = (
+    event: PointerEvent<HTMLDivElement>
+  ) => {
+    const target = event.target;
+
+    if (target instanceof Element && target.closest('button')) {
+      return;
+    }
+
+    if (event.pointerType === 'mouse') {
+      handleStopPreview();
+      return;
+    }
+
+    if (isPreviewPlaying) {
+      handleStopPreview();
+      return;
+    }
+
+    void handlePlayPreview();
+  };
+
+  const handlePlayButtonPointerEnter = (
+    event: PointerEvent<HTMLButtonElement>
+  ) => {
+    if (event.pointerType === 'mouse') {
+      void handlePlayPreview();
+    }
+  };
+
+  const handlePlayButtonClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    void handlePlayPreview();
+  };
+
   const handleToggleSound = async () => {
-    if (!videoRef.current) return;
+    const video = videoRef.current;
+
+    if (!video) return;
 
     const nextSoundState = !isSoundEnabled;
 
-    setIsSoundEnabled(nextSoundState);
-    videoRef.current.muted = !nextSoundState;
+    video.muted = !nextSoundState;
 
     try {
-      await videoRef.current.play();
+      await video.play();
+      setIsSoundEnabled(nextSoundState);
+      setIsPreviewPlaying(true);
     } catch {
-      // Ignore playback interruption.
+      video.muted = true;
+      setIsSoundEnabled(false);
+      setIsPreviewPlaying(false);
     }
   };
 
@@ -303,8 +355,8 @@ const Hero = () => {
         className='relative z-10 mx-auto mt-[-112px] max-w-[1200px] px-6 md:mt-[-80px]'
       >
         <div
-          onClick={handleStopPreview}
-          onMouseLeave={handleStopPreview}
+          onPointerUp={handleHeroVideoPointerUp}
+          onPointerLeave={handleHeroVideoPointerLeave}
           className='group/video relative aspect-[1160/459] w-full overflow-hidden rounded-3xl bg-[image:var(--gradient-brand)]'
         >
           <div
@@ -366,9 +418,10 @@ const Hero = () => {
           <button
             type='button'
             aria-label='Play hero preview video'
-            onMouseEnter={handlePlayPreview}
+            onPointerEnter={handlePlayButtonPointerEnter}
+            onClick={handlePlayButtonClick}
             className={`ds-focus-ring absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-out ${
-              isPreviewPlaying ? 'scale-110 opacity-0' : 'opacity-100'
+              isPreviewPlaying ? 'pointer-events-none scale-110 opacity-0' : 'opacity-100'
             }`}
           >
             <Image
@@ -376,7 +429,7 @@ const Hero = () => {
               alt=''
               width={71}
               height={71}
-              className='h-14 w-14 md:h-16 md:w-16'
+              className='h-14 w-14 max-md:size-[clamp(2.25rem,10vw,3.5rem)] md:h-16 md:w-16'
             />
           </button>
 
@@ -391,7 +444,9 @@ const Hero = () => {
               event.stopPropagation();
               handleToggleSound();
             }}
-            className='ds-focus-ring border-neutral-25/20 text-neutral-25 absolute right-4 bottom-4 z-30 grid size-11 place-items-center rounded-full border bg-neutral-950/50 opacity-0 backdrop-blur-md transition duration-300 group-hover/video:opacity-100 hover:bg-neutral-950/70'
+            className={`ds-focus-ring border-neutral-25/20 text-neutral-25 absolute right-4 bottom-4 z-30 grid size-11 place-items-center rounded-full border bg-neutral-950/50 backdrop-blur-md transition duration-300 hover:bg-neutral-950/70 ${
+              isPreviewPlaying ? 'opacity-100' : 'opacity-0 group-hover/video:opacity-100'
+            }`}
           >
             {isSoundEnabled ? (
               <Volume2 aria-hidden='true' className='size-5' />
