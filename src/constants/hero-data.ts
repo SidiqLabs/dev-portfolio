@@ -4,7 +4,7 @@ export const HERO_DATA = {
   badge: "Sidiq's Portfolio",
   headline: {
     prefix: 'I am a',
-    highlight: 'Front-End Engineer',
+    highlight: 'Front-End Software Engineer',
     suffix: '& Web Programming Enthusiast',
   },
   description:

@@ -112,10 +112,10 @@ const Contact = () => {
         </div>
 
         {/* Focused Blob Glow Layer */}
-        <div className='absolute top-[-96px] left-[-72px] h-[280px] w-[360px] rounded-[50%] opacity-25 blur-[72px] [background:var(--glow-atmosphere-purple)]' />
+        <div className='absolute top-[-96px] left-16 h-[12rem] w-[14rem] rounded-[50%] opacity-25 blur-[4rem] [background:var(--glow-atmosphere-purple)] lg:left-0 lg:h-[280px] lg:w-[360px] lg:blur-[72px]' />
 
         {/* Massive Ambient Haze Layer */}
-        <div className='absolute top-[-180px] right-[-520px] h-[1120px] w-[1120px] rounded-full opacity-18 blur-[240px] [background:var(--glow-atmosphere-purple)]' />
+        <div className='absolute top-[-120px] left-1/2 h-[12rem] w-[12rem] -translate-x-1/2 rounded-full opacity-18 blur-[4rem] [background:var(--glow-atmosphere-purple)] lg:top-[-180px] lg:right-0 lg:left-auto lg:h-[min(78vw,1120px)] lg:w-[min(78vw,1120px)] lg:translate-x-0 lg:blur-[240px]' />
       </div>
 
       <div className='custom-container relative grid items-center gap-12 md:grid-cols-[minmax(0,0.95fr)_minmax(25rem,1.05fr)] md:gap-16 lg:gap-28'>

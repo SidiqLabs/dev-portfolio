@@ -4,7 +4,7 @@
 
 import { motion, useInView } from 'motion/react';
 import Image from 'next/image';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Section } from '@/components/layouts/section';
 
@@ -256,9 +256,36 @@ const getOrbitPositionStyle = (radius: number, angle: number) => {
   };
 };
 
+const useMediaQuery = (query: string) => {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const mediaQueryList = window.matchMedia(query);
+    const updateMatches = () => setMatches(mediaQueryList.matches);
+
+    updateMatches();
+    mediaQueryList.addEventListener('change', updateMatches);
+
+    return () => {
+      mediaQueryList.removeEventListener('change', updateMatches);
+    };
+  }, [query]);
+
+  return matches;
+};
+
 const SkillsOrbit = () => {
+  const shouldContainOrbit = useMediaQuery('(hover: none), (pointer: coarse)');
+  const orbitClassName = [
+    'relative mx-auto aspect-square w-[calc(100%-clamp(1.5rem,8vw,4rem))] max-w-[520px] justify-self-center md:w-full',
+    shouldContainOrbit &&
+      'overflow-x-clip overflow-y-visible [overflow-clip-margin:5rem]',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <div className='relative mx-auto aspect-square w-full max-w-[520px] justify-self-center'>
+    <div className={orbitClassName}>
       {ORBIT_CONFIGS.map((config) => (
         <div
           key={`orbit-ring-${config.ring}`}

@@ -25,9 +25,9 @@ const StandOut = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.5, delay: 0.12, ease: 'easeOut' }}
-          className='grid h-12 grid-cols-[1.4fr_0.8fr_0.8fr] items-center rounded-full px-5 text-center text-sm font-semibold text-neutral-25 [background:var(--gradient-brand)] md:h-14 md:px-8'
+          className='text-neutral-25 grid h-12 grid-cols-[minmax(0,1.4fr)_minmax(2.75rem,0.8fr)_minmax(3.5rem,0.8fr)] items-center rounded-full px-5 text-center text-sm font-semibold [background:var(--gradient-brand)] md:h-14 md:px-8'
         >
-          <div>Skill</div>
+          <div className='min-w-0 text-left'>Skill</div>
           <div>Me</div>
           <div>Common</div>
         </motion.div>
@@ -44,9 +44,9 @@ const StandOut = () => {
                 delay: index * 0.07 + 0.18,
                 ease: 'easeOut',
               }}
-              className='grid min-h-14 grid-cols-[1.4fr_0.8fr_0.8fr] items-center border-b border-neutral-800 px-5 text-center last:border-b-0 md:min-h-14 md:px-8'
+              className='grid min-h-14 grid-cols-[minmax(0,1.4fr)_minmax(2.75rem,0.8fr)_minmax(3.5rem,0.8fr)] items-center border-b border-neutral-800 px-5 text-center last:border-b-0 md:min-h-14 md:px-8'
             >
-              <p className='text-sm font-semibold text-neutral-25'>
+              <p className='text-neutral-25 min-w-0 text-left text-sm font-semibold'>
                 {item.skill}
               </p>
 
@@ -77,7 +77,7 @@ const StatusIcon = ({ isActive }: StatusIconProps) => {
         whileInView={{ scale: 1, opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.35, ease: 'easeOut' }}
-        className='inline-flex size-7 items-center justify-center rounded-full text-neutral-25 [background:var(--gradient-brand)]'
+        className='text-neutral-25 inline-flex size-7 items-center justify-center rounded-full [background:var(--gradient-brand)]'
       >
         <Check size={16} strokeWidth={3} />
       </motion.span>
@@ -90,7 +90,7 @@ const StatusIcon = ({ isActive }: StatusIconProps) => {
       whileInView={{ scale: 1, opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.35, ease: 'easeOut' }}
-      className='inline-flex size-7 items-center justify-center rounded-full bg-neutral-700 text-neutral-25'
+      className='text-neutral-25 inline-flex size-7 items-center justify-center rounded-full bg-neutral-700'
     >
       <X size={16} strokeWidth={3} />
     </motion.span>
