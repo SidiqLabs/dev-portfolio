@@ -2,7 +2,13 @@
 
 'use client';
 
-import { motion, useInView } from 'motion/react';
+import {
+  motion,
+  useInView,
+  useReducedMotion,
+  useTime,
+  useTransform,
+} from 'motion/react';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
@@ -297,15 +303,7 @@ const SkillsOrbit = () => {
         />
       ))}
 
-      <motion.div
-        className='absolute inset-0'
-        animate={{ rotate: 360 }}
-        transition={{
-          duration: 28,
-          ease: 'linear',
-          repeat: Infinity,
-        }}
-      >
+      <div className='absolute inset-0'>
         {ORBIT_OBJECTS.map((object) => {
           const effectiveRadius =
             object.type === 'skill'
@@ -322,6 +320,8 @@ const SkillsOrbit = () => {
               <OrbitDot
                 key={object.id}
                 density={ORBIT_DENSITY}
+                radius={effectiveRadius}
+                angle={object.angle}
                 style={positionStyle}
               />
             );
@@ -332,18 +332,47 @@ const SkillsOrbit = () => {
               key={object.id}
               skill={object.skill}
               density={object.density}
+              radius={effectiveRadius}
+              angle={object.angle}
               style={positionStyle}
             />
           );
         })}
-      </motion.div>
+      </div>
     </div>
   );
+};
+
+const ORBIT_DURATION_MS = 28_000;
+
+const useIndividualOrbit = (radius: number, startAngle: number) => {
+  const time = useTime();
+  const shouldReduceMotion = useReducedMotion();
+
+  const left = useTransform(time, (elapsed) => {
+    const angle = shouldReduceMotion
+      ? startAngle
+      : startAngle + (elapsed / ORBIT_DURATION_MS) * 360;
+
+    return getOrbitPositionStyle(radius, angle).left;
+  });
+
+  const top = useTransform(time, (elapsed) => {
+    const angle = shouldReduceMotion
+      ? startAngle
+      : startAngle + (elapsed / ORBIT_DURATION_MS) * 360;
+
+    return getOrbitPositionStyle(radius, angle).top;
+  });
+
+  return { left, top };
 };
 
 type SkillIconCardProps = {
   skill: Skill;
   density: OrbitDensity;
+  radius: number;
+  angle: number;
   className?: string;
   style?: React.CSSProperties;
 };
@@ -351,9 +380,13 @@ type SkillIconCardProps = {
 const SkillIconCard = ({
   skill,
   density,
+  radius,
+  angle,
   className,
   style,
 }: SkillIconCardProps) => {
+  const orbitStyle = useIndividualOrbit(radius, angle);
+
   return (
     <motion.div
       className={[
@@ -363,12 +396,10 @@ const SkillIconCard = ({
       ]
         .filter(Boolean)
         .join(' ')}
-      style={style}
-      animate={{ rotate: -360 }}
-      transition={{
-        duration: 28,
-        ease: 'linear',
-        repeat: Infinity,
+      style={{
+        ...style,
+        left: orbitStyle.left,
+        top: orbitStyle.top,
       }}
     >
       <div className='flex h-full w-full items-center justify-center rounded-[inherit]'>
@@ -386,14 +417,25 @@ const SkillIconCard = ({
   );
 };
 
+const MotionImage = motion.create(Image);
+
 type OrbitDotProps = {
   density: OrbitDensity;
+  radius: number;
+  angle: number;
   style: React.CSSProperties;
 };
 
-const OrbitDot = ({ density, style }: OrbitDotProps) => {
+const OrbitDot = ({
+  density,
+  radius,
+  angle,
+  style,
+}: OrbitDotProps) => {
+  const orbitStyle = useIndividualOrbit(radius, angle);
+
   return (
-    <Image
+    <MotionImage
       src='/assets/ornaments/orbit-dot.svg'
       alt=''
       width={16}
@@ -403,7 +445,11 @@ const OrbitDot = ({ density, style }: OrbitDotProps) => {
         'absolute z-0 -translate-x-1/2 -translate-y-1/2 opacity-80 brightness-125',
         ORBIT_DOT_SIZE_CLASSES[density],
       ].join(' ')}
-      style={style}
+      style={{
+        ...style,
+        left: orbitStyle.left,
+        top: orbitStyle.top,
+      }}
     />
   );
 };
