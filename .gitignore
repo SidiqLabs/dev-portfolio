@@ -22,3 +22,5 @@ docs/progress/
 
 # Local backup files
 *.backup
+.vercel
+.env*

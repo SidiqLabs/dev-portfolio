@@ -24,15 +24,15 @@ export const projectsData: Project[] = [
     sourceUrl: '#',
   },
   {
-    title: 'Restaurant Web Frontend',
+    title: 'Foody',
     description:
-      'A restaurant ordering interface focused on menu browsing, cart flow, and frontend state management.',
-    imageSrc: '/assets/images/project2.jpg',
-    techStack: ['Next.js', 'Redux', 'Tailwind'],
+      'A restaurant ordering frontend prototype for discovering restaurants, browsing menus, and managing ordering flows with structured server and client state.',
+    imageSrc: '/assets/images/project-foody.webp',
+    techStack: ['Next.js', 'React Query', 'Redux'],
     year: '2026',
     status: 'Completed',
-    demoUrl: '#',
-    sourceUrl: '#',
+    demoUrl: 'https://foody-sidiqlabs.vercel.app/',
+    sourceUrl: 'https://github.com/SidiqLabs/restaurant-web-frontend',
   },
   {
     title: 'Social Media App',
