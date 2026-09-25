@@ -6,7 +6,13 @@ import { Volume2, VolumeX } from 'lucide-react';
 import { motion } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { type MouseEvent, type PointerEvent, useRef, useState } from 'react';
+import {
+  type MouseEvent,
+  type PointerEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { Button } from '@/components/ui/button';
 
@@ -18,6 +24,7 @@ const HERO_ANIMATION_DURATION = 0.6;
 
 const Hero = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const videoContainerRef = useRef<HTMLDivElement | null>(null);
   const [isSoundEnabled, setIsSoundEnabled] = useState(false);
   const [isPreviewPlaying, setIsPreviewPlaying] = useState(false);
 
@@ -46,17 +53,137 @@ const Hero = () => {
     setIsPreviewPlaying(false);
   };
 
-  const handleHeroVideoPointerLeave = (
-    event: PointerEvent<HTMLDivElement>
-  ) => {
+  useEffect(() => {
+    const videoContainer = videoContainerRef.current;
+
+    if (!videoContainer) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) {
+          const video = videoRef.current;
+
+          if (!video) {
+            return;
+          }
+
+          video.pause();
+          video.currentTime = 0;
+          setIsPreviewPlaying(false);
+        }
+      },
+      {
+        threshold: 0,
+      }
+    );
+
+    observer.observe(videoContainer);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isPreviewPlaying) {
+      return;
+    }
+
+    const TAP_MOVEMENT_THRESHOLD = 10;
+
+    let pointerId: number | null = null;
+    let startX = 0;
+    let startY = 0;
+    let startedOutsideVideo = false;
+    let movedBeyondTapThreshold = false;
+
+    const resetGesture = () => {
+      pointerId = null;
+      startedOutsideVideo = false;
+      movedBeyondTapThreshold = false;
+    };
+
+    const handlePointerDown = (event: globalThis.PointerEvent) => {
+      const videoContainer = videoContainerRef.current;
+      const target = event.target;
+
+      if (!videoContainer || !(target instanceof Node)) {
+        resetGesture();
+        return;
+      }
+
+      pointerId = event.pointerId;
+      startX = event.clientX;
+      startY = event.clientY;
+      startedOutsideVideo = !videoContainer.contains(target);
+      movedBeyondTapThreshold = false;
+    };
+
+    const handlePointerMove = (event: globalThis.PointerEvent) => {
+      if (event.pointerId !== pointerId || !startedOutsideVideo) {
+        return;
+      }
+
+      const deltaX = event.clientX - startX;
+      const deltaY = event.clientY - startY;
+
+      if (Math.hypot(deltaX, deltaY) > TAP_MOVEMENT_THRESHOLD) {
+        movedBeyondTapThreshold = true;
+      }
+    };
+
+    const handlePointerUp = (event: globalThis.PointerEvent) => {
+      if (event.pointerId !== pointerId) {
+        return;
+      }
+
+      const shouldStop = startedOutsideVideo && !movedBeyondTapThreshold;
+
+      resetGesture();
+
+      if (!shouldStop) {
+        return;
+      }
+
+      const video = videoRef.current;
+
+      if (!video) {
+        return;
+      }
+
+      video.pause();
+      video.currentTime = 0;
+      setIsPreviewPlaying(false);
+    };
+
+    const handlePointerCancel = (event: globalThis.PointerEvent) => {
+      if (event.pointerId === pointerId) {
+        resetGesture();
+      }
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('pointermove', handlePointerMove);
+    document.addEventListener('pointerup', handlePointerUp);
+    document.addEventListener('pointercancel', handlePointerCancel);
+
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('pointermove', handlePointerMove);
+      document.removeEventListener('pointerup', handlePointerUp);
+      document.removeEventListener('pointercancel', handlePointerCancel);
+    };
+  }, [isPreviewPlaying]);
+
+  const handleHeroVideoPointerLeave = (event: PointerEvent<HTMLDivElement>) => {
     if (event.pointerType === 'mouse') {
       handleStopPreview();
     }
   };
 
-  const handleHeroVideoPointerUp = (
-    event: PointerEvent<HTMLDivElement>
-  ) => {
+  const handleHeroVideoPointerUp = (event: PointerEvent<HTMLDivElement>) => {
     const target = event.target;
 
     if (target instanceof Element && target.closest('button')) {
@@ -355,6 +482,7 @@ const Hero = () => {
         className='relative z-10 mx-auto mt-[-112px] max-w-[1200px] px-6 md:mt-[-80px]'
       >
         <div
+          ref={videoContainerRef}
           onPointerUp={handleHeroVideoPointerUp}
           onPointerLeave={handleHeroVideoPointerLeave}
           className='group/video relative aspect-[1160/459] w-full overflow-hidden rounded-3xl bg-[image:var(--gradient-brand)]'
@@ -403,7 +531,7 @@ const Hero = () => {
             loop
             playsInline
             preload='metadata'
-            className={`absolute inset-0 z-10 h-full w-full object-cover transition duration-500 ${
+            className={`absolute inset-0 z-10 h-full w-full rounded-[inherit] object-cover transition duration-500 ${
               isPreviewPlaying ? 'scale-[1.02] opacity-100' : 'opacity-0'
             }`}
           >
@@ -421,7 +549,9 @@ const Hero = () => {
             onPointerEnter={handlePlayButtonPointerEnter}
             onClick={handlePlayButtonClick}
             className={`ds-focus-ring absolute top-1/2 left-1/2 z-30 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ease-out ${
-              isPreviewPlaying ? 'pointer-events-none scale-110 opacity-0' : 'opacity-100'
+              isPreviewPlaying
+                ? 'pointer-events-none scale-110 opacity-0'
+                : 'opacity-100'
             }`}
           >
             <Image
@@ -444,15 +574,19 @@ const Hero = () => {
               event.stopPropagation();
               handleToggleSound();
             }}
-            className={`ds-focus-ring border-neutral-25/20 text-neutral-25 absolute right-4 bottom-4 z-30 grid size-11 place-items-center rounded-full border bg-neutral-950/50 backdrop-blur-md transition duration-300 hover:bg-neutral-950/70 ${
-              isPreviewPlaying ? 'opacity-100' : 'opacity-0 group-hover/video:opacity-100'
+            className={`ds-focus-ring text-neutral-25 absolute right-1 bottom-1 z-30 grid size-11 place-items-center rounded-full transition duration-300 md:right-4 md:bottom-4 ${
+              isPreviewPlaying
+                ? 'opacity-100'
+                : 'opacity-0 group-hover/video:opacity-100'
             }`}
           >
-            {isSoundEnabled ? (
-              <Volume2 aria-hidden='true' className='size-5' />
-            ) : (
-              <VolumeX aria-hidden='true' className='size-5' />
-            )}
+            <span className='border-neutral-25/20 grid size-8 place-items-center rounded-full border bg-neutral-950/50 backdrop-blur-md transition duration-300 hover:bg-neutral-950/70 md:size-11'>
+              {isSoundEnabled ? (
+                <Volume2 aria-hidden='true' className='size-4 md:size-5' />
+              ) : (
+                <VolumeX aria-hidden='true' className='size-4 md:size-5' />
+              )}
+            </span>
           </button>
         </div>
       </motion.div>
