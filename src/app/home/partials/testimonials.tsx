@@ -193,7 +193,7 @@ const TestimonialCard = ({
         'transition-all duration-300',
         isSelected
           ? 'border-transparent md:shadow-[var(--shadow-glow-brand-sm)] [background:linear-gradient(var(--color-base-background),var(--color-base-background))_padding-box,var(--gradient-brand)_border-box]'
-          : 'hover:border-brand-purple/40 border-neutral-900 hover:-translate-y-1 hover:shadow-[var(--shadow-glow-brand-xs)]',
+          : 'border-neutral-900 md:hover:border-brand-purple/40 md:hover:-translate-y-1 md:hover:shadow-[var(--shadow-glow-brand-xs)]',
       ].join(' ')}
     >
       <div className='flex items-center gap-3'>
