@@ -189,10 +189,10 @@ const TestimonialCard = ({
       className={[
         'group h-[15.1875rem] w-full cursor-pointer overflow-hidden text-left',
         'rounded-2xl border p-5 md:rounded-3xl md:p-6',
-        'bg-base-background/85 backdrop-blur-sm',
+        'bg-base-background/85 md:backdrop-blur-sm',
         'transition-all duration-300',
         isSelected
-          ? 'border-transparent shadow-[var(--shadow-glow-brand-sm)] [background:linear-gradient(var(--color-base-background),var(--color-base-background))_padding-box,var(--gradient-brand)_border-box]'
+          ? 'border-transparent md:shadow-[var(--shadow-glow-brand-sm)] [background:linear-gradient(var(--color-base-background),var(--color-base-background))_padding-box,var(--gradient-brand)_border-box]'
           : 'hover:border-brand-purple/40 border-neutral-900 hover:-translate-y-1 hover:shadow-[var(--shadow-glow-brand-xs)]',
       ].join(' ')}
     >
