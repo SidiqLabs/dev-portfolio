@@ -4,7 +4,7 @@
 
 # Web Development Prompt Governance
 
-Version: 2.2
+Version: 2.3
 Owner: Sidiq Kusumah
 
 Purpose:
@@ -346,119 +346,269 @@ Code must be understandable by other developers without explanation.
 
 ## 16. RECOMMENDATION EVIDENCE LAW
 
-AI must not recommend or implement a UI/UX pattern, interaction model,
-architecture choice, or engineering solution merely because it is technically
-possible, generally accepted, or compliant with a broad standard.
+Engineering recommendations MUST be justified for the actual use case before
+they are presented to the user or implemented.
 
-Before making a recommendation that changes product behavior or implementation
-direction, AI must verify that the recommendation is relevant to the actual
-use case.
+The agent MUST distinguish between:
 
-AI must distinguish between:
+- technically possible;
+- standards-compliant;
+- common industry practice;
+- professional practice for the same or closely related use case;
+- appropriate for this project.
 
-1. Technically possible
-2. Standards-compliant
-3. Common industry practice
-4. Professional pattern for the same or closely related use case
-5. Appropriate for this project's design system, constraints, and goals
+These categories are not interchangeable.
 
-These categories are not equivalent and must never be presented as equivalent.
+### 16.1 Required Decision Flow
 
-### Required Recommendation Flow
+For non-trivial engineering, architecture, UI, or UX recommendations, use:
 
-For UI/UX and engineering decisions, AI must use this reasoning order:
-
-Actual Use Case
+Actual Problem
+→ Actual Use Case
 → Existing Implementation Audit
-→ Relevant Professional Pattern
-→ Accessibility / Standards Requirements
-→ Project Design System
-→ Responsive / Input / Device Impact
-→ Engineering Trade-offs
+→ Requirement Evidence
+→ Solution Candidates
+→ Relevant Professional Practice Evidence
+→ Professional Practice Paradox Gate
+→ Decision Parameter Analysis
+→ Project Fit
+→ Counter-Evidence Check
+→ Recommendation Confidence Gate
 → Recommendation
 → Implementation
+→ Validation
 
-Implementation must not begin before the recommendation has passed this
-relevance check.
+The recommendation MUST NOT skip directly from a valid requirement to an
+assumed solution.
 
-### Evidence Relevance Rule
+### 16.2 Requirement Evidence Is Not Solution Evidence
 
-A generic standard, framework documentation, component library,
-tutorial, or unrelated UI pattern is not sufficient evidence that a solution
-is appropriate for this project.
-
-Evidence used to justify a recommendation must match the component,
-interaction, architecture problem, or use case as closely as reasonably
-possible.
-
-When direct evidence is unavailable, AI must state the uncertainty instead of
-presenting inference as established best practice.
-
-### Best-Practice Claim Rule
-
-When using terms such as:
-
-- best practice
-- professional pattern
-- industry standard
-- recommended approach
-- standard implementation
-
-AI must ensure that:
-
-- the claim is supported by relevant evidence;
-- the evidence is applicable to the actual use case;
-- standards requirements are separated from implementation choices;
-- competing valid approaches are acknowledged when materially relevant;
-- project-specific constraints are considered before choosing an approach.
-
-AI must not transform a general requirement into a specific design decision
-without evidence that the implementation pattern is appropriate.
-
-### Standards vs Implementation Rule
-
-Standards define requirements or constraints.
-
-Standards do not automatically define the correct visual design,
-interaction pattern, component choice, or implementation strategy.
+Evidence that a problem, requirement, accessibility obligation, standard, or
+constraint exists does NOT by itself prove that a particular implementation
+is appropriate.
 
 For example:
 
-A requirement that moving content must be controllable does not, by itself,
-prove that a permanently visible media-style Pause/Play control is the correct
-professional pattern for every moving-content component.
+A standard requiring users to control moving content does not, by itself,
+prove that a specific visible control, interaction pattern, placement, or
+visual treatment is the correct solution for the current product.
 
-The implementation must still be validated against the actual use case.
+Standards define requirements and constraints.
 
-### Insufficient Evidence Rule
+They do not automatically define the best project-specific implementation.
 
-If relevant evidence is insufficient:
+Therefore:
+
+REQUIREMENT EVIDENCE != SOLUTION EVIDENCE
+
+A proposed solution requires evidence of its own.
+
+### 16.3 Professional Practice Evidence
+
+When recommending a solution, investigate how comparable professional
+implementations handle the same or closely related use case.
+
+Evidence should be relevant to the actual problem.
+
+Generic framework documentation, unrelated design examples, generic
+tutorials, or standards alone are insufficient evidence for a
+project-specific professional-pattern claim.
+
+Do not claim "best practice", "professional pattern", "standard approach", or
+equivalent language unless the evidence is relevant to the actual use case and
+the project constraints.
+
+### 16.4 Professional Practice Paradox Gate
+
+If authoritative guidance, theoretical best practice, or an apparently valid
+solution differs from observed professional practice in comparable use cases,
+the difference MUST be investigated before making a recommendation.
+
+The agent MUST ask:
+
+- Why is the theoretically valid solution not commonly used here?
+- Why is another pattern preferred?
+- What problem or trade-off is the professional implementation avoiding?
+- What alternative solution is used instead?
+- Do those reasons apply to this project?
+
+The existence of a difference is not itself the conclusion.
+
+The purpose of this gate is to understand the decision logic behind the
+difference.
+
+If the reason cannot be established with sufficient relevant evidence:
+
+NO RECOMMENDATION.
+DO NOT PATCH.
+
+### 16.5 Decision Parameter Analysis
+
+When relevant, investigate the parameters that explain why a solution is used
+or avoided.
+
+These may include:
+
+- UX efficiency;
+- task relevance;
+- visual hierarchy;
+- aesthetic integration;
+- interaction cost;
+- discoverability;
+- interface clutter;
+- mobile ergonomics;
+- touch behavior;
+- mouse behavior;
+- keyboard behavior;
+- cognitive load;
+- accessibility;
+- motion purpose;
+- responsive behavior;
+- performance;
+- rendering cost;
+- implementation complexity;
+- state complexity;
+- maintenance cost;
+- consistency with surrounding UI;
+- consistency with user expectations;
+- compatibility with the project design system;
+- alternative solutions;
+- cost versus user benefit.
+
+This list is not a checklist that must be mechanically completed for every
+change.
+
+Use the parameters relevant to the actual decision.
+
+The goal is to understand WHY professional practice selects or rejects a
+solution, not merely to count examples.
+
+### 16.6 Observed Practice Is Not Automatic Justification
+
+Finding that professional products commonly use or avoid a pattern is useful
+evidence, but it is not sufficient justification by itself.
+
+Do NOT reason:
+
+"Professional sites use X, therefore this project should use X."
+
+Do NOT reason:
+
+"Professional sites avoid X, therefore this project should avoid X."
+
+Instead determine:
+
+Observed Practice
+→ Why It Exists
+→ Relevant Trade-offs
+→ Alternative Used
+→ Whether Those Conditions Apply Here
+→ Project-Specific Decision
+
+PROFESSIONAL CONSENSUS != PROJECT FIT
+
+Professional practice must be understood, not copied.
+
+### 16.7 Counter-Evidence Requirement
+
+Before recommending a solution, actively investigate reasons the solution may
+be wrong for the actual use case.
+
+The analysis MUST consider credible counter-evidence when it exists.
+
+Ask:
+
+- What would make this solution inappropriate?
+- What professional implementations choose differently?
+- Why do they choose differently?
+- What costs or regressions would this introduce?
+- Is there a simpler solution with equal or greater user benefit?
+- Is the proposed solution solving a real user problem or merely adding
+  technically valid behavior?
+
+Do not search only for evidence that confirms the first proposed solution.
+
+A recommendation that survives counter-evidence is stronger than one produced
+by confirmation alone.
+
+### 16.8 Alternative Solution Requirement
+
+When professional practice avoids a seemingly valid solution, investigate what
+is used instead.
+
+The analysis should identify:
+
+Problem
+→ Rejected or uncommon solution
+→ Reason it is avoided
+→ Alternative solution
+→ Why the alternative is preferred
+→ Applicability to this project
+
+Do not remove a solution merely because it is uncommon without understanding
+the replacement strategy.
+
+### 16.9 Recommendation Confidence Gate
+
+A recommendation may be presented only when there is sufficient relevant
+evidence for the solution itself and sufficient understanding of its
+trade-offs.
+
+Possible outcomes are:
+
+1. RECOMMEND
+   Evidence supports the solution for the actual project context.
+
+2. REJECT
+   Evidence shows the solution is inappropriate for the actual project
+   context.
+
+3. NO RECOMMENDATION
+   Evidence is insufficient or conflicting and the decision parameters cannot
+   yet be established.
+
+If the result is NO RECOMMENDATION:
 
 DO NOT PATCH.
 
-AI must instead:
+Research or audit further.
 
-- continue the audit;
-- gather more relevant evidence;
-- explain the uncertainty; or
-- present clearly separated alternatives and trade-offs.
+Uncertainty MUST NOT be disguised as confidence.
 
-AI must not convert uncertainty into confident implementation advice.
+### 16.10 Recommendation Gate Applies Before User-Facing Advice
 
-### Core Rule
+This law applies before implementation AND before presenting a concrete
+solution to the user as the recommended approach.
 
-VALID ≠ BEST PRACTICE
+The agent MUST NOT burden the user with an inadequately validated solution and
+expect the user to discover its contextual flaws.
 
-COMPLIANT ≠ PROFESSIONAL PATTERN
+Exploratory possibilities may be discussed when explicitly identified as
+unvalidated candidates.
 
-COMMON COMPONENT ≠ CORRECT COMPONENT
+They MUST NOT be represented as recommendations until this law has been
+satisfied.
 
-TECHNICALLY CORRECT ≠ CONTEXTUALLY CORRECT
+### 16.11 Core Rules
 
-A recommendation that is technically valid but contextually inappropriate
-must be rejected.
+VALID != BEST PRACTICE
 
----
+COMPLIANT != PROFESSIONAL PATTERN
+
+REQUIREMENT EVIDENCE != SOLUTION EVIDENCE
+
+OBSERVED PRACTICE != JUSTIFICATION
+
+PROFESSIONAL CONSENSUS != PROJECT FIT
+
+COMMON COMPONENT != CORRECT COMPONENT
+
+TECHNICALLY CORRECT != CONTEXTUALLY CORRECT
+
+If a recommendation cannot be justified for the actual use case:
+
+NO RECOMMENDATION.
+DO NOT PATCH.
 
 ## 17. FINAL LAW
 
